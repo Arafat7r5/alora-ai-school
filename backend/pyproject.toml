@@ -1,0 +1,23 @@
+[project]
+name = "alora-c-tutor-api"
+version = "0.1.0"
+description = "A small C programming tutor API"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.34,<1",
+  "sqlalchemy>=2.0,<2.1",
+  "psycopg[binary]>=3.2,<4",
+  "pydantic-settings>=2.8,<3",
+  "email-validator>=2.2,<3",
+  "pwdlib[argon2]>=0.2,<1",
+  "pyjwt>=2.10,<3",
+  "langchain-core>=1,<2",
+  "langchain-openai>=0.3,<2",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "httpx>=0.27,<1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
