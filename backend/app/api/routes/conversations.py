@@ -12,7 +12,7 @@ from app.schemas.conversation import (
     NewMessage,
     ReplyResponse,
 )
-from app.services.tutor import TutorUnavailableError, answer_question
+from app.services.tutor import InvalidTutorResponseError, TutorUnavailableError, answer_question
 
 
 router = APIRouter(prefix="/conversations", tags=["conversations"])
@@ -63,6 +63,8 @@ def send_message(
         answer = answer_question(history, question)
     except TutorUnavailableError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except InvalidTutorResponseError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=502, detail="The AI provider could not answer. Please try again.") from exc
 

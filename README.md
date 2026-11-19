@@ -12,6 +12,8 @@ This repository is a growing classroom project. Each step adds one working featu
 
 The OpenAI API call uses the model set by `OPENAI_MODEL` (default: `gpt-4.1-mini`). Provider usage may have a cost. Keep `.env` private.
 
+To inspect tutor calls in LangSmith, set `LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY` in `.env`, then restart the API with `docker compose up --build`. Send a tutor message and open the `alora-c-tutor` tracing project (or the name in `LANGSMITH_PROJECT`). Open the `c_tutor_reply` run to see its prompt and model response; the nested model run shows latency and token usage. Traces include student questions and conversation context, so enable tracing only when that data may be sent to your LangSmith workspace. If your LangSmith account uses a non-US region, set `LANGSMITH_ENDPOINT` to your region's API URL as described in [LangSmith's tracing guide](https://docs.langchain.com/langsmith/trace-with-langchain).
+
 ## Follow one question through the code
 
 ```text
@@ -32,6 +34,7 @@ backend/app/
   api/router.py               /api router registration
   api/routes/                 auth, conversation, health endpoints
   schemas/                    Pydantic request and response models
+  schemas/tutor.py             validated AI reply fields
   models/                     SQLAlchemy User, Conversation, Message tables
   core/config.py              environment settings
   core/security.py            password hashing and JWT validation
@@ -50,4 +53,4 @@ frontend/src/
 
 This first step uses one model call. It has no agent, graph, tool calling, retrieval, or file upload yet. Database tables are created automatically on API startup to keep this lesson small; a later step should introduce migrations before changing the schema. JWTs live in browser session storage and expire after 24 hours. This is a learning starter, not a production authentication design.
 
-The tutor receives the latest 12 messages in a conversation. A failed AI call stores neither the question nor an answer, so you can retry it.
+The tutor receives the latest 12 messages in a conversation. Its structured response must contain a nonblank answer and one short follow-up question. Invalid or failed AI calls store neither the question nor an answer, so you can retry them.

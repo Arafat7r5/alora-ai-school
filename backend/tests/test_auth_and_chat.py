@@ -14,6 +14,7 @@ from app.api.routes import conversations
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
+from app.services.tutor import InvalidTutorResponseError
 
 
 def test_register_login_and_conversation_ownership(monkeypatch):
@@ -55,6 +56,18 @@ def test_register_login_and_conversation_ownership(monkeypatch):
             )
             assert reply.status_code == 201
             assert reply.json()["answer"]["content"] == "A C variable stores a value."
+            assert len(client.get(f"/api/conversations/{conversation_id}", headers=alice_headers).json()["messages"]) == 2
+
+            def invalid_answer(_history, _question):
+                raise InvalidTutorResponseError("The tutor returned an invalid answer. Please try again.")
+
+            monkeypatch.setattr(conversations, "answer_question", invalid_answer)
+            failed = client.post(
+                f"/api/conversations/{conversation_id}/messages",
+                headers=alice_headers,
+                json={"content": "Explain pointers"},
+            )
+            assert failed.status_code == 502
             assert len(client.get(f"/api/conversations/{conversation_id}", headers=alice_headers).json()["messages"]) == 2
 
             bob = client.post("/api/auth/register", json={"email": "bob@example.com", "password": "correct-horse-2"})
