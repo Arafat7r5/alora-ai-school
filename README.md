@@ -15,27 +15,29 @@ The OpenAI API call uses the model set by `OPENAI_MODEL` (default: `gpt-4.1-mini
 ## Follow one question through the code
 
 ```text
-frontend/src/components/ChatScreen.jsx  form and conversation UI
-  → frontend/src/api.js             HTTP request with bearer token
-  → backend/app/chat.py              ownership check and message persistence
-  → backend/app/tutor.py             C teacher prompt and LangChain model call
-  → backend/app/models.py            Postgres rows
+frontend/src/components/ChatScreen.jsx     form and conversation UI
+  → frontend/src/api.js                    HTTP request with bearer token
+  → backend/app/api/routes/conversations.py  ownership check and message persistence
+  → backend/app/services/tutor.py            C teacher prompt and LangChain model call
+  → backend/app/models/                    Postgres rows
 ```
 
-For authentication, follow `AuthScreen.jsx` → `api.js` → `backend/app/auth.py` → `backend/app/security.py`.
+For authentication, follow `AuthScreen.jsx` → `api.js` → `backend/app/api/routes/auth.py` → `backend/app/core/security.py`.
 
 ## Project map
 
 ```text
 backend/app/
-  main.py       FastAPI app and route registration
-  config.py     environment settings
-  database.py   database connection and request session
-  models.py     User, Conversation, Message tables
-  auth.py       register, sign in, current user routes
-  security.py   password hashing and JWT validation
-  chat.py       conversation and message routes
-  tutor.py      the one LangChain call and C teaching prompt
+  main.py                     FastAPI app and middleware
+  api/router.py               /api router registration
+  api/routes/                 auth, conversation, health endpoints
+  schemas/                    Pydantic request and response models
+  models/                     SQLAlchemy User, Conversation, Message tables
+  core/config.py              environment settings
+  core/security.py            password hashing and JWT validation
+  db/base.py                  SQLAlchemy declarative base
+  db/session.py               database connection and request session
+  services/tutor.py           LangChain call and C teaching prompt
 frontend/src/
   App.jsx                    session entry point
   api.js                     all HTTP calls

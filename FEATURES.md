@@ -7,11 +7,11 @@ Update this file whenever a feature is added. Keep the list tied to working code
 | Feature | Where to follow it |
 | --- | --- |
 | React and Tailwind classroom UI | `frontend/src/components/`, `frontend/src/styles.css` |
-| Register and sign in with email and password | `frontend/src/components/AuthScreen.jsx` → `backend/app/auth.py` |
-| Argon2 password hashes and expiring JWT bearer tokens | `backend/app/security.py` |
-| Protected, user-owned conversation history | `backend/app/chat.py` → `backend/app/models.py` |
-| C teacher replies through one LangChain `ChatOpenAI` call | `backend/app/tutor.py` |
-| Postgres storage and local Docker startup | `backend/app/database.py`, `compose.yaml` |
+| Register and sign in with email and password | `frontend/src/components/AuthScreen.jsx` → `backend/app/api/routes/auth.py` |
+| Argon2 password hashes and expiring JWT bearer tokens | `backend/app/core/security.py` |
+| Protected, user-owned conversation history | `backend/app/api/routes/conversations.py` → `backend/app/models/` |
+| C teacher replies through one LangChain `ChatOpenAI` call | `backend/app/services/tutor.py` |
+| Postgres storage and local Docker startup | `backend/app/db/session.py`, `compose.yaml` |
 
 ## Suggested next steps (not built yet)
 

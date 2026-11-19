@@ -2,6 +2,7 @@ import os
 from contextlib import asynccontextmanager
 
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-with-at-least-thirty-two-characters")
+os.environ.setdefault("DATABASE_URL", "sqlite://")
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -9,7 +10,9 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app import models  # noqa: F401
-from app.database import Base, get_db
+from app.api.routes import conversations
+from app.db.base import Base
+from app.db.session import get_db
 from app.main import app
 
 
@@ -23,7 +26,7 @@ def test_register_login_and_conversation_ownership(monkeypatch):
             yield session
 
     app.dependency_overrides[get_db] = test_db
-    monkeypatch.setattr("app.chat.answer_question", lambda history, question: "A C variable stores a value.")
+    monkeypatch.setattr(conversations, "answer_question", lambda history, question: "A C variable stores a value.")
 
     @asynccontextmanager
     async def no_lifespan(_app):

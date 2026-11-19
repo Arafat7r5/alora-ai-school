@@ -1,7 +1,7 @@
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 
-from app.config import get_settings
+from app.core.config import get_settings
 from app.models import Message
 
 

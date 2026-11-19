@@ -7,8 +7,8 @@ from jwt import InvalidTokenError
 from pwdlib import PasswordHash
 from sqlalchemy.orm import Session
 
-from app.config import get_settings
-from app.database import get_db
+from app.core.config import get_settings
+from app.db.session import get_db
 from app.models import User
 
 

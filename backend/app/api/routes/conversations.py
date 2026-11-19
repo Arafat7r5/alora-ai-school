@@ -1,47 +1,21 @@
-from datetime import datetime
-
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.core.security import get_current_user
+from app.db.session import get_db
 from app.models import Conversation, Message, User
-from app.security import get_current_user
-from app.tutor import TutorUnavailableError, answer_question
+from app.schemas.conversation import (
+    ConversationDetail,
+    ConversationResponse,
+    MessageResponse,
+    NewMessage,
+    ReplyResponse,
+)
+from app.services.tutor import TutorUnavailableError, answer_question
 
 
-router = APIRouter(prefix="/api/conversations", tags=["conversations"])
-
-
-class ConversationResponse(BaseModel):
-    id: int
-    title: str
-    created_at: datetime
-
-    model_config = {"from_attributes": True}
-
-
-class MessageResponse(BaseModel):
-    id: int
-    role: str
-    content: str
-    created_at: datetime
-
-    model_config = {"from_attributes": True}
-
-
-class ConversationDetail(ConversationResponse):
-    messages: list[MessageResponse]
-
-
-class NewMessage(BaseModel):
-    content: str = Field(min_length=1, max_length=4000)
-
-
-class ReplyResponse(BaseModel):
-    question: MessageResponse
-    answer: MessageResponse
+router = APIRouter(prefix="/conversations", tags=["conversations"])
 
 
 def owned_conversation(db: Session, conversation_id: int, user_id: int) -> Conversation:

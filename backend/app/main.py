@@ -4,10 +4,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import models  # noqa: F401 - register ORM tables before create_all
-from app.auth import router as auth_router
-from app.chat import router as chat_router
-from app.config import get_settings
-from app.database import Base, engine
+from app.api.router import api_router
+from app.core.config import get_settings
+from app.db.base import Base
+from app.db.session import engine
 
 
 @asynccontextmanager
@@ -24,10 +24,4 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Authorization", "Content-Type"],
 )
-app.include_router(auth_router)
-app.include_router(chat_router)
-
-
-@app.get("/api/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+app.include_router(api_router, prefix="/api")
